@@ -1,0 +1,553 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Makefile | Ten-zzZ</title><meta name="keywords" content="linux"><meta name="author" content="Ten"><meta name="copyright" content="Ten"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Makefile"><meta name="application-name" content="Makefile"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Makefile"><meta property="og:url" content="http://example.com/2024/05/02/Makefile/index.html"><meta property="og:site_name" content="Ten-zzZ"><meta property="og:description" content="编译工具及构建工具介绍在之前的课程中，都是直接使用gcc对代码进行编译，这对简单的工程是可以的，但当我们遇到复杂的工程时，每次用gcc等编译工具去操作就会显得很低效。因此make工具就出现了， make的出现是为了解决手动编译和链接大型工程的问题，它可以避免重复的工作，提高效率，保证正确性。make"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://img2.imgtp.com/2024/05/02/96JZQtZT.png"><meta property="article:author" content="Ten"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://img2.imgtp.com/2024/05/02/96JZQtZT.png"><meta name="description" content="编译工具及构建工具介绍在之前的课程中，都是直接使用gcc对代码进行编译，这对简单的工程是可以的，但当我们遇到复杂的工程时，每次用gcc等编译工具去操作就会显得很低效。因此make工具就出现了， make的出现是为了解决手动编译和链接大型工程的问题，它可以避免重复的工作，提高效率，保证正确性。make"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="http://example.com/2024/05/02/Makefile/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2023/09/03/125766904/ee23df8517f3c3e3efc4145658269c06_5714860933110284659.png"},
+  postHeadAiDescription: undefined,
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: {"mode":"api","api":"https://github.com/anzhiyu-c/img2color-go","cover_change":true},
+  authorStatus: {"skills":["🌐 浏览器里的探险家"]},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Ten","link":"链接: ","source":"来源: Ten-zzZ","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Ten-zzZ',
+  title: 'Makefile',
+  postAI: '',
+  pageFillDescription: '编译工具及构建工具介绍, Makefile的使用, 编译的四个阶段, Makefile的规则, Makefile一个示例：, 伪目标, 基本语法, Makefile的函数, wildcard, shell, patsubst, subst, dir, suffix, basename, addsuffix, addprefix, foreach, 条件判断, ifeqx2Fifneq, ifdefx2Fifndef编译工具及构建工具介绍在之前的课程中都是直接使用对代码进行编译这对简单的工程是可以的但当我们遇到复杂的工程时每次用等编译工具去操作就会显得很低效因此工具就出现了的出现是为了解决手动编译和链接大型工程的问题它可以避免重复的工作提高效率保证正确性工具就根据中的命令进行编译和链接的但是当工程非常大的时候手写也是非常麻烦的如果换了个平台又要重新修改因此更高级的一些构建系统或者工具工具像和就出现了它们可以根据一些配置文件来自动化编译和链接软件项目是一个跨平台的构建系统它可以根据中的指令来生成不同平台和工具的工程文件例如解决方案文件等可以支持多种语言和多种架构它还提供了一些高级功能如测试打包安装等是一个用于项目的构建系统它可以根据或中的指令来生成或其他形式的工程文件是一个小巧而快速的构建工具它可以根据中的规则来执行编译和链接命令主要关注于性能和效率它可以利用多核处理器和并行处理来加速构建过程通常不需要用户直接编写配置文件而是由其他构建系统如来生成是一个用于生成文件的工具是一种用于的配置文件格式是一个用于生成脚本的工具脚本是一个用于检测系统环境并生成最终的文件的脚本是一种用于的配置文件格式它包含了一些指令和变量用于定义程序或库的源文件目标文件依赖关系和编译选项等是一个经典而通用的构建工具它可以根据中的规则来执行编译和链接命令可以支持多种平台和工具它还提供了一些高级功能如条件判断函数调用模式匹配的使用编译的四个阶段编译的四个过程预处理编译汇编链接的规则缩进缩进缩进也就是一个目标文件可以是也可以是执行文件还可以是一个标签对于标签这种特性在后续的讲伪目标中会有叙述要生成那个所需要的文件或是目标也就是需要执行的任意命令一个示例的作用是否输出执行的命令注意在中使用号注释如果我们要编译下面这个最简单的例子修改如下执行命令可以生成文件执行可以输出注意如果后面不跟目标名默认执行第一个目标上述中也即执行目标也可以在中加入清理工程的规则如下所示伪目标如果一个目标和一个实际文件同名那么会认为该目标已经是最新的不需要重新生成也不会执行其命令通过将目标声明为伪目标可以避免这种情况强制执行其命令示例在文件中先创建了一个与目标同名的文件执行时提示已是最新导致目标下的命令没有执行修改文件将说明为伪目标会强制执行目标下的命令最终输出文件基本语法变量赋值和预定义变量中的变量赋值运算符有四种分别是和符号表示取变量的值当变量名多于一个字符时使用表示延迟展开赋值即变量的值是在使用时才确定可能会受到后面的赋值影响例如那么最后的值是而不是表示直接赋值即变量的值是在定义时就确定不会受到后面的赋值影响例如那么最后的值是而不是表示条件赋值即只有当变量没有被赋值时才使用等号后面的值作为变量的值例如如果在之前没有被赋值那么的值就为否则保持原来的值不变变量前面已经赋值表示追加赋值即将等号后面的值追加到变量原来的值之后形成一个新的值例如如果在之前没有被赋值那么的值就为如果在之前被赋值为那么的值就为符的其他用法表示所有的依赖文件表示生成的目标文件代表第一个依赖文件注释和换行符采用进行一行注释采用作为续行符变量的替换引用语法格式或表示把变量的值中的后缀替换成后缀示例把变量的值中的后缀替换成后缀赋值给变量总结示例这是一个的注释延迟赋值立即赋值追加赋值表示添加调试信息可用于的调试变量的替换引用把的替换成的函数基本格式或者是是函数名是函数的参数参数之间要用逗号分隔开参数和函数名之间使用空格分开调用函数的时候要使用字符后面可以跟小括号或者大括号用于扩展通配符返回与通配符匹配的文件列表格式如下通配符是一种特殊的字符可以表示多个文件名或目录名常见的通配符有和分别表示任意长度的任意字符和单个任意字符比如表示所有以结尾的文件名表示所有以开头中间有一个任意字符以结尾的文件名示例表示查找并返回目录下所有的文件表示通配符匹配一个或者多个任意字符注意该函数不会递归查找只能查当前目下的文件用于执行命令返回值返回命令执行结果参数介绍需要执行的命令参数列表示例表示查找当前目录及子目录下的所有文件结尾的代码源文件用于替换文本中的内容返回值函数会在中找到所有符合的单词并用替换它们然后返回替换后的文本参数介绍字符串被替换的字符串可以包含通配符的模式表示匹配任意长度的任意字符字符串替换字符串也可以包含表示用中匹配的字符替换是一个要处理的文本可以包含多个以空格分隔的单词示例包含通配符不包含通配符用于替换文本中的内容返回值函数会在中找到所有的并用替换它们然后返回替换后的字符串参数介绍是要被替换的字符或单词是替换后的字符或单词是要处理的字符串示例综合示例内容内容执行生成生成函数是一个用于从文件名序列中提取目录部分的函数优化上述从文件名序列中取出各个文件名的后缀示例从文件名序列中取出各个文件名的前缀部分返回文件名序列的前缀序列如果文件没有前缀则返回空字串示例把后缀加到文件序列中的每个单词后面返回加过后缀的文件名序列示例把前缀加到中的每个单词后面返回加过前缀的文件名序列示例把中使用空格分割的单词依次取出并赋值给变量然后执行表达式示例条件判断语句判断参数是否相等相等为否则是可以没有相等执行这里的语句不相等执行这里的语句语句判断参数是否不等不等为否则为可以没有不相等执行这里的语句相等执行这里的语句语句判断参数是否有值有值为否则是可以没有如果定义了执行这里的内容如果没定义执行这里的内容判断参数是否没有值没有值为否则为可以没有如果没定义执行这里的内容如果定义执行这里的内容',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-02 18:21:53',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://img2.imgtp.com/2024/04/29/XJZajStb.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">Ten-zzZ</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/music/"><span> 音乐馆</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://img2.imgtp.com/2024/04/29/ZLUmR1ch.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://img2.imgtp.com/2024/04/29/ZLUmR1ch.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://img2.imgtp.com/2024/04/29/jhBLTmH3.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://img2.imgtp.com/2024/04/29/jhBLTmH3.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/linux/" style="font-size: 1.05rem;">linux<sup>8</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 1.05rem;">嵌入式<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">线程<sup>1</sup></a><a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 1.05rem;">网络编程<sup>1</sup></a><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 1.05rem;">设计模式<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 1.05rem;">进程<sup>2</sup></a><a href="/tags/%E9%80%9A%E4%BF%A1/" style="font-size: 1.05rem;">通信<sup>1</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.05rem;">随笔<sup>2</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 1.05rem;">面试<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/05/"><span class="card-archive-list-date">五月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">8</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/04/"><span class="card-archive-list-date">四月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%85%A8%E5%BF%97H616%E7%B3%BB%E5%88%97/" itemprop="url">全志H616系列</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/linux/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>linux</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Makefile</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-05-02T05:51:32.000Z" title="发表于 2024-05-02 13:51:32">2024-05-02</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-05-02T10:21:53.566Z" title="更新于 2024-05-02 18:21:53">2024-05-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">3.2k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为新余"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>新余</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://img2.imgtp.com/2024/05/02/96JZQtZT.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/05/02/Makefile/"><header><a class="post-meta-categories" href="/categories/%E5%85%A8%E5%BF%97H616%E7%B3%BB%E5%88%97/" itemprop="url">全志H616系列</a><a href="/tags/linux/" tabindex="-1" itemprop="url">linux</a><h1 id="CrawlerTitle" itemprop="name headline">Makefile</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Ten</span><time itemprop="dateCreated datePublished" datetime="2024-05-02T05:51:32.000Z" title="发表于 2024-05-02 13:51:32">2024-05-02</time><time itemprop="dateCreated datePublished" datetime="2024-05-02T10:21:53.566Z" title="更新于 2024-05-02 18:21:53">2024-05-02</time></header><h2 id="编译工具及构建工具介绍"><a href="#编译工具及构建工具介绍" class="headerlink" title="编译工具及构建工具介绍"></a>编译工具及构建工具介绍</h2><p>在之前的课程中，都是直接使用gcc对代码进行编译，这对简单的工程是可以的，但当我们遇到复杂的工程时，每次用gcc等编译工具去操作就会显得很低效。因此make工具就出现了， make的出现是为了解决手动编译和链接大型工程的问题，它可以避免重复的工作，提高效率，保证正确性。make工具就根据makefile中的命令进行编译和链接的。但是当工程非常大的时候，手写makefile也是非常麻烦的，如果换了个平台makefile又要重新修改，因此更高级的一些构建系统或者工具工具像cmake、qmake、ninja和auto make就出现了，它们可以根据一些配置文件来自动化编译和链接软件项目。</p>
+<p><strong>cmake</strong>：是一个跨平台的构建系统，它可以根据CMakeLists.txt中的指令来生成不同平台和工具的工程文件，例如Makefile、Visual Studio解决方案、Ninja文件等。cmake可以支持多种语言和多种架构，它还提供了一些高级功能，如测试、打包、安装等。</p>
+<p><strong>qmake</strong>：是一个用于Qt项目的构建系统，它可以根据.pro或.pri中的指令来生成Makefile或其他形式的工程文件。</p>
+<p><strong>ninja</strong>：是一个小巧而快速的构建工具，它可以根据ninja.build中的规则来执行编译和链接命令。ninja主要关注于性能和效率，它可以利用多核处理器和并行处理来加速构建过程。ninja通常不需要用户直接编写<br>配置文件，而是由其他构建系统（如cmake）来生成</p>
+<p><strong>auto make</strong>：是一个用于生成Makefile.in文件的工具，Makefile.in是一种用于auto conf的配置文件格式，auto conf是一个用于生成configure脚本的工具。configure脚本是一个用于检测系统环境并生成最终的Makefile文件的脚本Makefile.am是一种用于auto make的配置文件格式，它包含了一些指令和变量，用于定义程序或库的源文件、目标文件、依赖关系和编译选项等。</p>
+<p><strong>make</strong>：是一个经典而通用的构建工具，它可以根据Makefile中的规则来执行编译和链接命令。make可以支持多种平台和工具，它还提供了一些高级功能，如条件判断、函数调用、模式匹配。</p>
+<h2 id="Makefile的使用"><a href="#Makefile的使用" class="headerlink" title="Makefile的使用"></a>Makefile的使用</h2><h3 id="编译的四个阶段"><a href="#编译的四个阶段" class="headerlink" title="编译的四个阶段"></a>编译的四个阶段</h3><p>编译的四个过程：预处理（Pre-Processing）、编译（Compiling）、汇编 (Assembliang)、链接（Linking）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502140115245.png" alt="image-20240502140115245"></p>
+<h3 id="Makefile的规则"><a href="#Makefile的规则" class="headerlink" title="Makefile的规则"></a>Makefile的规则</h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">target ... : prerequisites ...</span><br><span class="line">&lt;tab缩进&gt;command</span><br><span class="line">&lt;tab缩进&gt;...</span><br><span class="line">&lt;tab缩进&gt;...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>target：也就是一个目标文件，可以是 Object File，也可以是执行文件。还可以是一个标签（ Label），<br>对于标签这种特性，在后续的讲“伪目标”中会有叙述。</li>
+<li>prerequisites：要生成那个 target 所需要的文件或是目标</li>
+<li>command ：也就是 make 需要执行的任意shell命令。</li>
+</ul>
+<h4 id="Makefile一个示例："><a href="#Makefile一个示例：" class="headerlink" title="Makefile一个示例："></a><strong>Makefile一个示例：</strong></h4><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span>		<span class="comment"># @的作用：是否输出执行的命令</span></span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502143906397.png" alt="image-20240502143906397"></p>
+<p><code>注意</code>：在makefile中使用<code>#</code>号注释</p>
+<p>如果，我们要编译下面这个最简单的例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello world!\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Makefile修改如下：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	</span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	gcc -o hello hello.c</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>执行命令make test 可以生成 hello文件， 执行make debug可以输出“hello world”：</p>
+<p><code>注意</code>:如果make后面不跟目标名，默认执行第一个目标，上述Makefile中也即执行debug目标。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502144544914.png" alt="image-20240502144544914"></p>
+<p>也可以在Makefile中加入清理工程的规则：如下所示</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	gcc -o hello hello.c</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm hello</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502144844832.png" alt="image-20240502144844832"></p>
+<h4 id="伪目标"><a href="#伪目标" class="headerlink" title="伪目标"></a>伪目标</h4><p>如果一个目标和一个实际文件同名，那么make会认为该目标已经是最新的，不需要重新生成，也不会执<br>行其命令。通过将目标声明为伪目标<code>.PHONY: debug</code>，可以避免这种情况，<strong>强制执行其命令</strong>。</p>
+<p>示例：在文件中先创建了一个与目标clean同名的文件，执行make clean时提示已是最新，导致clean目标下的shell命令没有执行。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	gcc -o hello hello.c</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm hello</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502145826507.png" alt="image-20240502145826507"></p>
+<p>修改Makefile文件，将clean说明为伪目标。会强制执行clean目标下的命令，最终输出hello文件</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line"><span class="section">test:</span></span><br><span class="line">	gcc -o hello hello.c</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm hello</span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean</span></span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/../imgs/Makefile/image-20240502150221773.png" alt="image-20240502150221773"></p>
+<h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><p><strong>变量赋值和预定义变量</strong></p>
+<p>Makefile中的变量赋值运算符有四种，分别是<code>=</code>、<code>:=</code>、<code>?=</code>和<code>+=</code>， <code>$</code>符号表示取变量的值，当变量名多于一个字符时，使用”<code>( )</code>“</p>
+<ul>
+<li><p>&#x3D; 表示<code>延迟展开赋值</code>，即变量的值是在<code>使用时才确定</code>，可能会受到后面的赋值影响。例如，VAR_A &#x3D; A，VAR_B &#x3D; $(VAR_A) B，VAR_A &#x3D; AA，那么最后VAR_B的值是AA B，而不是A B</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VAR_A = A</span><br><span class="line">VAR_B = <span class="variable">$(VAR_A)</span> B</span><br><span class="line">VAR_A = AA</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(VAR_B)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">AA B</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>:&#x3D; 表示<code>直接赋值</code>，即变量的值是在<code>定义时就确定</code>，不会受到后面的赋值影响。例如，VAR_A :&#x3D; A， VAR_B :&#x3D; $(VAR_A) B，VAR_A :&#x3D; AA，那么最后VAR_B的值是A B，而不是AA B。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VAR_A := A</span><br><span class="line">VAR_B := <span class="variable">$(VAR_A)</span> B</span><br><span class="line">VAR_A := AA</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(VAR_B)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">A B</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>?&#x3D;表示<code>条件赋值</code>，即只有当变量<code>没有被赋值时</code>，才使用等号后面的值作为变量的值。例如，VAR ?&#x3D; new_value，如果VAR在之前没有被赋值，那么VAR的值就为new_value，否则保持原来的值不变。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">VAR ?= new_value</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(VAR)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">new_value</span><br></pre></td></tr></table></figure>
+
+<p>变量VAR前面已经赋值</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VAR = old_value</span><br><span class="line">VAR ?= new_value</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(VAR)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">old_value</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>+&#x3D; 表示<code>追加赋值</code>，即将等号后面的值追加到变量原来的值之后，形成一个新的值。例如，VAR +&#x3D; new_value，如果VAR在之前没有被赋值，那么VAR的值就为new_value，如果VAR在之前被赋值为<br>old_value，那么VAR的值就为old_value new_value</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VAR = old_value</span><br><span class="line">VAR += new_value</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(VAR)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">old_value new_value</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>$符的其他用法：</strong></p>
+<ul>
+<li><p>$^：表示所有的依赖文件</p>
+</li>
+<li><p>$@：表示生成的目标文件</p>
+</li>
+<li><p>$&lt;：代表第一个依赖文件</p>
+</li>
+</ul>
+<p><strong>注释和换行符</strong></p>
+<p>采用<code>#</code>进行一行注释</p>
+<p>采用<code>\</code>作为续行符</p>
+<p><strong>变量的替换引用</strong></p>
+<p>语法格式：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">$(var:a=b)或$&#123;var:a=b&#125;		#表示把变量var的值中的a后缀替换成b后缀</span></span><br></pre></td></tr></table></figure>
+
+<p>示例：把变量src的值中的.c后缀替换成.o后缀，赋值给变量obj。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">src := a.c b.c c.c</span><br><span class="line">obj := $(src:c=o)</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(obj)</span> </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">a.o b.o c.o</span><br></pre></td></tr></table></figure>
+
+<p><strong>总结示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这是一个Makefile的注释</span></span><br><span class="line">TARGET = hello <span class="comment">#TARGET延迟赋值hello</span></span><br><span class="line">CC := gcc <span class="comment">#CC立即赋值gcc</span></span><br><span class="line">CC += -g <span class="comment">#CC追加赋值-g， gcc -g表示添加调试信息，可用于gdb的调试</span></span><br><span class="line"></span><br><span class="line">SRC = hello.c</span><br><span class="line">OBJ = $(SRC:.c=.o) <span class="comment">#变量的替换引用，把hello.c的.c替换成.o</span></span><br><span class="line"></span><br><span class="line">debug :</span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	echo <span class="variable">$(SRC)</span></span><br><span class="line">	echo <span class="variable">$(OBJ)</span></span><br><span class="line">	</span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(SRC)</span></span><br><span class="line">	<span class="variable">$(CC)</span> -o <span class="variable">$@</span> <span class="variable">$&lt;</span>		<span class="comment"># $(CC) -o $&#123;TARGET&#125; hello.c</span></span><br><span class="line"></span><br><span class="line"><span class="section">compile: <span class="variable">$(TARGET)</span></span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm hello hello.o -r</span><br><span class="line">	</span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean compile</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Makefile的函数"><a href="#Makefile的函数" class="headerlink" title="Makefile的函数"></a>Makefile的函数</h3><p>基本格式：<code>$(&lt;function&gt; &lt;arguments&gt;)</code>或者是<code>$&#123;&lt;function&gt; &lt;arguments&gt;&#125;</code>。function：是函数名，arguments：是函数的参数，参数之间要用逗号分隔开，参数和函数名之间使用空格分开。调用函数的时候要使用字符“$”，后面可以跟小括号或者大括号。</p>
+<h4 id="wildcard"><a href="#wildcard" class="headerlink" title="wildcard"></a>wildcard</h4><p>用于扩展通配符，返回与通配符匹配的文件列表。格式如下</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">wildcard</span> arguments)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>通配符</strong></p>
+<p>是一种特殊的字符，可以表示多个文件名或目录名，常见的通配符有 <code>*</code> 和 <code>?</code>，分别表示任意长度的任意字符和单个任意字符。</p>
+<p>比如：*.c 表示所有以 .c 结尾的文件名。a?.txt 表示所有以 a 开头，中间有一个任意字符，以 .txt 结尾的文件名。</p>
+<p><strong>示例</strong>：表示查找并返回src目录下所有的.c文件， *表示通配符， 匹配一个或者多个任意字符。</p>
+<p><code>注意</code>：该函数不会递归查找。只能查当前目下的文件</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SRC = <span class="variable">$(<span class="built_in">wildcard</span> src/*.c)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(SRC)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ ls</span><br><span class="line">clean  hello2.c  hello3.c  hello.c  Makefile  test</span><br><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">./hello2.c ./hello3.c ./hello.c</span><br></pre></td></tr></table></figure>
+
+<h4 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h4><p>用于执行shell命令</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">shell</span> &lt;cmd&gt; &lt;args&gt;)</span></span><br></pre></td></tr></table></figure>
+
+<p>返回值：返回命令执行结果</p>
+<p>参数介绍：</p>
+<ul>
+<li>cmd：需要执行的命令</li>
+<li>args：参数列表</li>
+</ul>
+<p><strong>示例</strong>：表示查找当前目录及子目录下的所有.c文件结尾的代码源文件</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SRC := <span class="variable">$(<span class="built_in">shell</span> find ./ -name &#x27;*.c&#x27;)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(SRC)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ ls</span><br><span class="line">clean  hello2.c  hello3.c  hello.c  Makefile  test</span><br><span class="line">ten@ten-virtual-machine:~/H616/demo$ cd ./test</span><br><span class="line">ten@ten-virtual-machine:~/H616/demo/test$ ls</span><br><span class="line">hello4.c</span><br><span class="line">ten@ten-virtual-machine:~/H616/demo/test$ cd ../</span><br><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">./test/hello4.c ./hello.c ./hello2.c ./hello3.c</span><br></pre></td></tr></table></figure>
+
+<h4 id="patsubst"><a href="#patsubst" class="headerlink" title="patsubst"></a>patsubst</h4><p>用于替换文本中的内容。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">patsubst</span> pattern,replacement,text)</span></span><br></pre></td></tr></table></figure>
+
+<p>返回值：patsubst 函数会在 text 中找到所有符合 pattern 的单词，并用 replacement 替换它们，然后<br>返回替换后的文本。</p>
+<p>参数介绍：</p>
+<ul>
+<li>pattern：字符串。被替换的字符串，可以包含通配符 <code>%</code> 的模式，表示匹配任意长度的任意字符。</li>
+<li>replacement：字符串。替换字符串，也可以包含 <code>%</code>，表示用 pattern 中匹配的字符替换。</li>
+<li>text：是一个要处理的文本，可以包含多个以空格分隔的单词。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#包含通配符</span></span><br><span class="line">SRC = a.c b.c c.c</span><br><span class="line">OBJ = <span class="variable">$(<span class="built_in">patsubst</span> %.c,%.o,<span class="variable">$(SRC)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">a.o b.o c.o</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#不包含通配符</span></span><br><span class="line">SRC = hello world</span><br><span class="line">OBJ = <span class="variable">$(<span class="built_in">patsubst</span> world,ten,<span class="variable">$(SRC)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">hello ten</span><br></pre></td></tr></table></figure>
+
+<h4 id="subst"><a href="#subst" class="headerlink" title="subst"></a>subst</h4><p>用于替换文本中的内容。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">subst</span> from,to,text)</span></span><br></pre></td></tr></table></figure>
+
+<p>返回值：subst 函数会在 text 中找到所有的 from，并用 to 替换它们，然后返回替换后的字符串。</p>
+<p>参数介绍：</p>
+<ul>
+<li>from：是要被替换的字符或单词</li>
+<li>to：是替换后的字符或单词</li>
+<li>text：是要处理的字符串。</li>
+</ul>
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OBJ = <span class="variable">$(<span class="built_in">subst</span> e,E,hello ten)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">hEllo tEn</span><br></pre></td></tr></table></figure>
+
+<p><strong>综合示例</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test@test:~/makefiletest$ tree</span><br><span class="line">.</span><br><span class="line">├── Makefile</span><br><span class="line">└── src</span><br><span class="line">	└── test.c</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#Makefile内容</span></span><br><span class="line">CC = gcc</span><br><span class="line">CC += -g</span><br><span class="line">SRC := <span class="variable">$(<span class="built_in">shell</span> find . -name *.c)</span></span><br><span class="line">TARGET := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %,$(<span class="built_in">subst</span> src,obj, <span class="variable">$(SRC)</span>)</span>)</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	echo <span class="variable">$(SRC)</span></span><br><span class="line">	echo <span class="variable">$(TARGET)</span></span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(SRC)</span></span><br><span class="line">	mkdir -p obj</span><br><span class="line">	<span class="variable">$(CC)</span> -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br><span class="line"></span><br><span class="line"><span class="section">compile: <span class="variable">$(TARGET)</span></span></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm obj -r</span><br><span class="line">	</span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean compile</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*test.c内容*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行make compile，生成生成obj&#x2F;test</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pg@pg-Default-string:~/makefiletest$ tree -a</span><br><span class="line">.</span><br><span class="line">├── Makefile</span><br><span class="line">├── obj</span><br><span class="line">│ 	└── test</span><br><span class="line">└── src</span><br><span class="line">	└── test.c</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="dir"><a href="#dir" class="headerlink" title="dir"></a>dir</h4><p>dir 函数是一个用于从文件名序列中提取目录部分的函数</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">dir</span> NAMES...)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>优化上述Makefile</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">CC = gcc</span><br><span class="line">CC += -g</span><br><span class="line">SRC := <span class="variable">$(<span class="built_in">shell</span> find . -name *.c)</span></span><br><span class="line">TARGET := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %,$(<span class="built_in">subst</span> src,obj, <span class="variable">$(SRC)</span>)</span>)</span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="string">&quot;hello world&quot;</span></span><br><span class="line">	echo <span class="variable">$(SRC)</span></span><br><span class="line">	echo <span class="variable">$(TARGET)</span></span><br><span class="line">	</span><br><span class="line"><span class="variable">$(TARGET)</span>: <span class="variable">$(SRC)</span></span><br><span class="line">	mkdir -p <span class="variable">$(<span class="built_in">dir</span> <span class="variable">$(TARGET)</span>)</span></span><br><span class="line">	<span class="variable">$(CC)</span> -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br><span class="line">	</span><br><span class="line"><span class="section">compile: <span class="variable">$(TARGET)</span></span></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	@rm <span class="variable">$(<span class="built_in">dir</span> <span class="variable">$(TARGET)</span>)</span> -r</span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean compile</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="suffix"><a href="#suffix" class="headerlink" title="suffix"></a>suffix</h4><p>从文件名序列中取出各个文件名的后缀。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">suffix</span> &lt;names...&gt;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OBJ = <span class="variable">$(<span class="built_in">suffix</span> hello.c test/hello4.txt ten)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">.c .txt</span><br></pre></td></tr></table></figure>
+
+<h4 id="basename"><a href="#basename" class="headerlink" title="basename"></a>basename</h4><p>从文件名序列中取出各个文件名的前缀部分。返回文件名序列的前缀序列，如果文件没有前缀，则返回空字串。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">basename</span> &lt;names...&gt;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OBJ = <span class="variable">$(<span class="built_in">basename</span> hello.c test/hello4.txt ten)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">hello test/hello4 ten</span><br></pre></td></tr></table></figure>
+
+<h4 id="addsuffix"><a href="#addsuffix" class="headerlink" title="addsuffix"></a>addsuffix</h4><p>把后缀加到文件序列中的每个单词后面。返回加过后缀的文件名序列。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">addsuffix</span> .c,foo bar)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OBJ = <span class="variable">$(<span class="built_in">addsuffix</span> .c,foo bar)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">foo.c bar.c</span><br></pre></td></tr></table></figure>
+
+<h4 id="addprefix"><a href="#addprefix" class="headerlink" title="addprefix"></a>addprefix</h4><p>把前缀加到中的每个单词后面。返回加过前缀的文件名序列。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">addprefix</span> src/,foo bar)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OBJ = <span class="variable">$(<span class="built_in">addprefix</span> src/,foo bar)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">src/foo src/bar</span><br></pre></td></tr></table></figure>
+
+<h4 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h4><p>把list中使用空格分割的单词依次取出并赋值给变量var, 然后执行text表达式</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$(<span class="built_in">foreach</span> &lt;var&gt;,&lt;list&gt;,&lt;text&gt;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">files = ten zzz nb</span><br><span class="line">OBJ = <span class="variable">$(<span class="built_in">foreach</span> <span class="built_in">file</span>,<span class="variable">$(files)</span>,<span class="variable">$(file)</span>.c)</span></span><br><span class="line"></span><br><span class="line"><span class="section">debug:</span></span><br><span class="line">	@echo <span class="variable">$(OBJ)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ten@ten-virtual-machine:~/H616/demo$ make</span><br><span class="line">ten.c zzz.c nb.c</span><br></pre></td></tr></table></figure>
+
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><h4 id="ifeq-ifneq"><a href="#ifeq-ifneq" class="headerlink" title="ifeq&#x2F;ifneq"></a>ifeq&#x2F;ifneq</h4><p><code>ifeq</code>语句 : 判断参数 是否相等，相等为 true, 否则是 false。可以没有else</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifeq</span> (arg1, arg2)</span><br><span class="line">	<span class="comment">#arg1 arg2 相等执行这里的语句</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="comment">#arg1 arg2 不相等执行这里的语句</span></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>ifneq</code>语句：判断参数 是否不等，不等为 true, 否则为 false。可以没有else</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (arg1, arg2)</span><br><span class="line">	<span class="comment">#arg1 arg2 不相等执行这里的语句</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="comment">#arg1 arg2 相等执行这里的语句</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="ifdef-ifndef"><a href="#ifdef-ifndef" class="headerlink" title="ifdef&#x2F;ifndef"></a>ifdef&#x2F;ifndef</h4><p><code>ifdef</code> 语句: 判断参数 是否有值 ，有值为 true, 否则是 false。可以没有else</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifdef</span> var</span><br><span class="line">	<span class="comment">#如果定义了var，执行这里的内容</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="comment">#如果没定义var，执行这里的内容</span></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>ifndef</code> : 判断参数 是否没有值 ，没有值为 true, 否则为 false。可以没有else</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">infdef var</span><br><span class="line">	<span class="comment">#如果没定义var，执行这里的内容</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="comment">#如果定义var，执行这里的内容</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/XJZajStb.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/XJZajStb.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">Ten</div><div class="post-copyright__author_desc">记得给自己磕头</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/05/02/Makefile/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/05/02/Makefile/')">Makefile</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://img2.imgtp.com/2024/04/29/ZLUmR1ch.png" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/ZLUmR1ch.png" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://img2.imgtp.com/2024/04/29/jhBLTmH3.png" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/jhBLTmH3.png" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/#about-reward" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/05/02/Makefile/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Makefile&amp;url=http://example.com/2024/05/02/Makefile/&amp;pic=https://img2.imgtp.com/2024/05/02/96JZQtZT.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Ten-zzZ</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/linux/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>linux<span class="tagsPageCount">8</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://img2.imgtp.com/2024/05/05/Bg6p4Ceu.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/05/02/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/02/sMAf8Hrd.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">踩坑记录</div></div></a></div><div class="next-post pull-right"><a href="/2024/05/02/%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/02/1T6KlZGz.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">交叉编译工具链配置</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2024/05/04/Linux%E7%BA%BF%E7%A8%8B/" title="Linux线程"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/05/Bg6p4Ceu.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-05-04</div><div class="title">Linux线程</div></div></a></div><div><a href="/2024/04/29/Socket%E7%BC%96%E7%A8%8B/" title="Socket编程"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/aStIRPSU.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-04-29</div><div class="title">Socket编程</div></div></a></div><div><a href="/2024/05/03/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%84%E5%BB%BA/" title="嵌入式Linux系统的构建"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/03/yIu4n2xM.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-05-03</div><div class="title">嵌入式Linux系统的构建</div></div></a></div><div><a href="/2024/05/02/%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE%E9%85%8D%E7%BD%AE/" title="交叉编译工具链配置"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/02/1T6KlZGz.webp" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-05-02</div><div class="title">交叉编译工具链配置</div></div></a></div><div><a href="/2024/05/03/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="线程同步"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="//img2.imgtp.com/2024/05/05/5xd3Cvv5.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-05-03</div><div class="title">线程同步</div></div></a></div><div><a href="/2024/04/30/%E8%BF%9B%E7%A8%8B/" title="进程"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/30/ZamtkUJE.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2024-04-30</div><div class="title">进程</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/04/29/XJZajStb.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"><div style="line-height:1.38;margin:0.6rem 0;text-align:justify;color:rgba(255, 255, 255, 0.8);">欢迎来到我的嵌入式学习笔记！这里是我作为一个初学者的探索记录，我们一起从零开始，一步步解开嵌入式的神秘面纱。</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Ten</h1><div class="author-info__desc">记得给自己磕头</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/Ten-zzZ" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/352659041" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E5%8F%8A%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.</span> <span class="toc-text">编译工具及构建工具介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Makefile%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">Makefile的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%9A%84%E5%9B%9B%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">2.1.</span> <span class="toc-text">编译的四个阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Makefile%E7%9A%84%E8%A7%84%E5%88%99"><span class="toc-number">2.2.</span> <span class="toc-text">Makefile的规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Makefile%E4%B8%80%E4%B8%AA%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">Makefile一个示例：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%AA%E7%9B%AE%E6%A0%87"><span class="toc-number">2.2.2.</span> <span class="toc-text">伪目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">2.2.3.</span> <span class="toc-text">基本语法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Makefile%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Makefile的函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wildcard"><span class="toc-number">2.3.1.</span> <span class="toc-text">wildcard</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shell"><span class="toc-number">2.3.2.</span> <span class="toc-text">shell</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#patsubst"><span class="toc-number">2.3.3.</span> <span class="toc-text">patsubst</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#subst"><span class="toc-number">2.3.4.</span> <span class="toc-text">subst</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dir"><span class="toc-number">2.3.5.</span> <span class="toc-text">dir</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#suffix"><span class="toc-number">2.3.6.</span> <span class="toc-text">suffix</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#basename"><span class="toc-number">2.3.7.</span> <span class="toc-text">basename</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#addsuffix"><span class="toc-number">2.3.8.</span> <span class="toc-text">addsuffix</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#addprefix"><span class="toc-number">2.3.9.</span> <span class="toc-text">addprefix</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#foreach"><span class="toc-number">2.3.10.</span> <span class="toc-text">foreach</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">2.4.</span> <span class="toc-text">条件判断</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ifeq-ifneq"><span class="toc-number">2.4.1.</span> <span class="toc-text">ifeq&#x2F;ifneq</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ifdef-ifndef"><span class="toc-number">2.4.2.</span> <span class="toc-text">ifdef&#x2F;ifndef</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/05/04/Linux%E7%BA%BF%E7%A8%8B/" title="Linux线程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/05/Bg6p4Ceu.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux线程"/></a><div class="content"><a class="title" href="/2024/05/04/Linux%E7%BA%BF%E7%A8%8B/" title="Linux线程">Linux线程</a><time datetime="2024-05-04T08:35:39.000Z" title="发表于 2024-05-04 16:35:39">2024-05-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/04/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E6%A8%A1%E6%9D%BF/" title="简单工厂模式"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/08/MIkSgHhh.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="简单工厂模式"/></a><div class="content"><a class="title" href="/2024/05/04/%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E6%A8%A1%E6%9D%BF/" title="简单工厂模式">简单工厂模式</a><time datetime="2024-05-04T08:35:39.000Z" title="发表于 2024-05-04 16:35:39">2024-05-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/03/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%84%E5%BB%BA/" title="嵌入式Linux系统的构建"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/03/yIu4n2xM.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="嵌入式Linux系统的构建"/></a><div class="content"><a class="title" href="/2024/05/03/%E5%B5%8C%E5%85%A5%E5%BC%8FLinux%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9E%84%E5%BB%BA/" title="嵌入式Linux系统的构建">嵌入式Linux系统的构建</a><time datetime="2024-05-03T02:49:31.000Z" title="发表于 2024-05-03 10:49:31">2024-05-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/03/%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%BD%AF%E4%BB%B6%E9%9D%A2%E8%AF%95%E9%A2%98/" title="嵌入式面试题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img2.imgtp.com/2024/05/05/HCN50noR.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="嵌入式面试题"/></a><div class="content"><a class="title" href="/2024/05/03/%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%BD%AF%E4%BB%B6%E9%9D%A2%E8%AF%95%E9%A2%98/" title="嵌入式面试题">嵌入式面试题</a><time datetime="2024-05-03T02:49:31.000Z" title="发表于 2024-05-03 10:49:31">2024-05-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/03/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="线程同步"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="//img2.imgtp.com/2024/05/05/5xd3Cvv5.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="线程同步"/></a><div class="content"><a class="title" href="/2024/05/03/%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5/" title="线程同步">线程同步</a><time datetime="2024-05-03T02:49:31.000Z" title="发表于 2024-05-03 10:49:31">2024-05-03</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2020 - 2024 By <a class="footer-bar-link" href="/" title="Ten" target="_blank">Ten</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">3</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.anheyu.com/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="/music/"><span> 音乐馆</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/equipment/"><i class="anzhiyufont anzhiyu-icon-dice-d20 faa-tada" style="font-size: 0.9em;"></i><span> 我的装备</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/linux/" style="font-size: 0.88rem;">linux<sup>8</sup></a><a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/" style="font-size: 0.88rem;">嵌入式<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">线程<sup>1</sup></a><a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" style="font-size: 0.88rem;">网络编程<sup>1</sup></a><a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" style="font-size: 0.88rem;">设计模式<sup>1</sup></a><a href="/tags/%E8%BF%9B%E7%A8%8B/" style="font-size: 0.88rem;">进程<sup>2</sup></a><a href="/tags/%E9%80%9A%E4%BF%A1/" style="font-size: 0.88rem;">通信<sup>1</sup></a><a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 0.88rem;">随笔<sup>2</sup></a><a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 0.88rem;">面试<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.cbd.int/pangu@4.0.7/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><script>(() => {
+  const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaid.length === 0) return
+  const runMermaid = () => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'default' : 'light'
+
+    Array.from($mermaid).forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+      const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+      const mermaidID = 'mermaid-' + index
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+
+      const renderV10 = () => {
+        renderFn.then(({svg}) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svg)
+        })
+      }
+
+      const renderV9 = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+      }
+
+      typeof renderFn === 'string' ? renderV9(renderFn) : renderV10()
+    })
+  }
+
+  const loadMermaid = () => {
+    window.loadMermaid ? runMermaid() : getScript('https://cdn.cbd.int/mermaid@10.2.4/dist/mermaid.min.js').then(runMermaid)
+  }
+
+  anzhiyu.addGlobalFn('themeChange', runMermaid, 'mermaid')
+
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
